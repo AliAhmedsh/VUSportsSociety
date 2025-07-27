@@ -2,14 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Image, View, StyleSheet } from 'react-native';
 
 // Import screens (we'll create these next)
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
-import HomeScreen from '../screens/participant/HomeScreen';
-import EventsScreen from '../screens/participant/EventsScreen';
-import TeamsScreen from '../screens/participant/TeamsScreen';
+import HomeScreen from '../screens/participant/HomeScreen/HomeScreen';
+import EventsScreen from '../screens/participant/EventsScreen/EventsScreen';
+import TeamsScreen from '../screens/participant/TeamScreen/TeamsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { useAuth } from '../context/AuthContext';
 
@@ -22,20 +22,40 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          // Define icon names for each route
-          const iconMap: { [key: string]: { active: string; inactive: string } } = {
-            Home: { active: 'home', inactive: 'home-outline' },
-            Events: { active: 'calendar', inactive: 'calendar-outline' },
-            Teams: { active: 'people', inactive: 'people-outline' },
-            Profile: { active: 'person', inactive: 'person-outline' }
+          // Define image sources for each route
+          const iconMap = {
+            Home: {
+              active: 'https://img.icons8.com/ios-filled/50/1a73e8/home.png',
+              inactive: 'https://img.icons8.com/ios/50/9e9e9e/home.png'
+            },
+            Events: {
+              active: 'https://img.icons8.com/ios-filled/50/1a73e8/calendar.png',
+              inactive: 'https://img.icons8.com/ios/50/9e9e9e/calendar.png'
+            },
+            Teams: {
+              active: 'https://img.icons8.com/ios/100/cccccc/teamwork.png',
+              inactive: 'https://img.icons8.com/ios/100/cccccc/teamwork.png'
+            },
+            Profile: {
+              active: 'https://img.icons8.com/ios-filled/50/1a73e8/user-male-circle.png',
+              inactive: 'https://img.icons8.com/ios/50/9e9e9e/user-male-circle.png'
+            }
           };
           
-          // Get the appropriate icon name based on route and focus state
-          const iconName = focused 
-            ? iconMap[route.name]?.active || 'help-circle'
-            : iconMap[route.name]?.inactive || 'help-circle-outline';
+          // Get the appropriate icon based on route and focus state
+          const iconSource = focused 
+            ? iconMap[route.name]?.active 
+            : iconMap[route.name]?.inactive;
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return (
+            <View style={styles.iconContainer}>
+              <Image 
+                source={{ uri: iconSource }} 
+                style={[styles.icon, { tintColor: color }]} 
+                resizeMode="contain"
+              />
+            </View>
+          );
         },
         tabBarActiveTintColor: '#1a73e8',
         tabBarInactiveTintColor: 'gray',
@@ -48,6 +68,19 @@ function MainTabs() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+  },
+});
 
 export default function AppNavigator() {
   const { user } = useAuth();

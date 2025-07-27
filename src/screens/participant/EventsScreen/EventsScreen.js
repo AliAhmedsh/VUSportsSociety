@@ -1,36 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/types';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import firestore from '@react-native-firebase/firestore';
 
-type Event = {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  type: 'tournament' | 'friendly' | 'training' | 'other';
-  location: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  registrationDeadline: string;
-  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-  createdBy: string;
-  createdAt: any;
-};
-
-type EventsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
-
 const EventsScreen = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const navigation = useNavigation();
+  const { user } = useAuth();
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
-  
-  const navigation = useNavigation<EventsScreenNavigationProp>();
-  const { user } = useAuth();
+  const [selectedFilter, setSelectedFilter] = useState('all');
 
   const fetchEvents = async () => {
     try {
@@ -38,7 +18,7 @@ const EventsScreen = () => {
       let query = eventsRef.where('status', 'in', ['upcoming', 'ongoing']);
       
       if (selectedFilter !== 'all') {
-        query = query.where('type', '==', selectedFilter) as any;
+        query = query.where('type', '==', selectedFilter);
       }
       
       const snapshot = await query.orderBy('date', 'asc').get();
@@ -46,7 +26,7 @@ const EventsScreen = () => {
       const eventsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      })) as Event[];
+      }));
       
       setEvents(eventsData);
     } catch (error) {
@@ -66,7 +46,7 @@ const EventsScreen = () => {
     fetchEvents();
   };
 
-  const renderEventItem = ({ item }: { item: Event }) => (
+  const renderEventItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.eventCard}
       onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}

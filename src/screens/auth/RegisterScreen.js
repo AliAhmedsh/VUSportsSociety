@@ -6,7 +6,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Picker } from '@react-native-picker/picker';
 import { RootStackParamList } from '../../navigation/types';
 
-type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
@@ -17,7 +16,7 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   
   const { register } = useAuth();
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  const navigation = useNavigation();
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword || !displayName) {
@@ -50,7 +49,7 @@ export default function RegisterScreen() {
           }
         ]
       );
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert('Registration Failed', error.message);
     } finally {
       setLoading(false);

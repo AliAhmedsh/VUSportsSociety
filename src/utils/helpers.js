@@ -1,17 +1,19 @@
 import { format, formatDistanceToNow, isToday, isTomorrow, isYesterday, isPast, isFuture, parseISO } from 'date-fns';
 import { Timestamp } from '@react-native-firebase/firestore';
 
-type DateInput = Date | Timestamp | string | number;
+/**
+ * @typedef {Date|import('@react-native-firebase/firestore').Timestamp|string|number} DateInput
+ */
 
 /**
  * Format a date to a readable string
- * @param date - The date to format (can be Date, Timestamp, ISO string, or timestamp number)
- * @param formatStr - The format string (default: 'MMM d, yyyy')
- * @returns Formatted date string
+ * @param {DateInput} date - The date to format (can be Date, Timestamp, ISO string, or timestamp number)
+ * @param {string} [formatStr='MMM d, yyyy'] - The format string
+ * @returns {string} Formatted date string
  */
-export const formatDate = (date: DateInput, formatStr: string = 'MMM d, yyyy'): string => {
+export const formatDate = (date, formatStr = 'MMM d, yyyy') => {
   try {
-    let dateObj: Date;
+    let dateObj;
     
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
@@ -32,12 +34,12 @@ export const formatDate = (date: DateInput, formatStr: string = 'MMM d, yyyy'): 
 
 /**
  * Format a date to a relative time string (e.g., "2 hours ago")
- * @param date - The date to format
- * @returns Relative time string
+ * @param {DateInput} date - The date to format
+ * @returns {string} Relative time string
  */
-export const formatRelativeTime = (date: DateInput): string => {
+export const formatRelativeTime = (date) => {
   try {
-    let dateObj: Date;
+    let dateObj;
     
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
@@ -58,12 +60,12 @@ export const formatRelativeTime = (date: DateInput): string => {
 
 /**
  * Format a date to a human-readable format (e.g., "Today at 2:30 PM", "Tomorrow at 10:00 AM")
- * @param date - The date to format
- * @returns Human-readable date string
+ * @param {DateInput} date - The date to format
+ * @returns {string} Human-readable date string
  */
-export const formatHumanReadableDate = (date: DateInput): string => {
+export const formatHumanReadableDate = (date) => {
   try {
-    let dateObj: Date;
+    let dateObj;
     
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
@@ -94,30 +96,30 @@ export const formatHumanReadableDate = (date: DateInput): string => {
 
 /**
  * Convert a Firestore Timestamp to a JavaScript Date
- * @param timestamp - The Firestore Timestamp
- * @returns JavaScript Date object
+ * @param {import('@react-native-firebase/firestore').Timestamp} timestamp - The Firestore Timestamp
+ * @returns {Date} JavaScript Date object
  */
-export const timestampToDate = (timestamp: Timestamp): Date => {
+export const timestampToDate = (timestamp) => {
   return timestamp.toDate();
 };
 
 /**
  * Convert a JavaScript Date to a Firestore Timestamp
- * @param date - The JavaScript Date
- * @returns Firestore Timestamp
+ * @param {Date} date - The JavaScript Date
+ * @returns {import('@react-native-firebase/firestore').Timestamp} Firestore Timestamp
  */
-export const dateToTimestamp = (date: Date): Timestamp => {
+export const dateToTimestamp = (date) => {
   return Timestamp.fromDate(date);
 };
 
 /**
  * Check if a date is in the past
- * @param date - The date to check
- * @returns True if the date is in the past
+ * @param {DateInput} date - The date to check
+ * @returns {boolean} True if the date is in the past
  */
-export const isDateInPast = (date: DateInput): boolean => {
+export const isDateInPast = (date) => {
   try {
-    let dateObj: Date;
+    let dateObj;
     
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
@@ -138,12 +140,12 @@ export const isDateInPast = (date: DateInput): boolean => {
 
 /**
  * Check if a date is in the future
- * @param date - The date to check
- * @returns True if the date is in the future
+ * @param {DateInput} date - The date to check
+ * @returns {boolean} True if the date is in the future
  */
-export const isDateInFuture = (date: DateInput): boolean => {
+export const isDateInFuture = (date) => {
   try {
-    let dateObj: Date;
+    let dateObj;
     
     if (date instanceof Timestamp) {
       dateObj = date.toDate();
@@ -164,10 +166,10 @@ export const isDateInFuture = (date: DateInput): boolean => {
 
 /**
  * Format a duration in milliseconds to a human-readable string (e.g., "2h 30m")
- * @param milliseconds - The duration in milliseconds
- * @returns Formatted duration string
+ * @param {number} milliseconds - The duration in milliseconds
+ * @returns {string} Formatted duration string
  */
-export const formatDuration = (milliseconds: number): string => {
+export const formatDuration = (milliseconds) => {
   const seconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -186,31 +188,31 @@ export const formatDuration = (milliseconds: number): string => {
 
 /**
  * Truncate a string to a specified length and add an ellipsis if necessary
- * @param str - The string to truncate
- * @param maxLength - The maximum length of the string
- * @returns The truncated string
+ * @param {string} str - The string to truncate
+ * @param {number} [maxLength=100] - The maximum length of the string
+ * @returns {string} The truncated string
  */
-export const truncateString = (str: string, maxLength: number = 100): string => {
+export const truncateString = (str, maxLength = 100) => {
   if (!str) return '';
   return str.length > maxLength ? `${str.substring(0, maxLength)}...` : str;
 };
 
 /**
  * Capitalize the first letter of a string
- * @param str - The string to capitalize
- * @returns The capitalized string
+ * @param {string} str - The string to capitalize
+ * @returns {string} The capitalized string
  */
-export const capitalize = (str: string): string => {
+export const capitalize = (str) => {
   if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 /**
  * Convert a string to title case
- * @param str - The string to convert
- * @returns The title-cased string
+ * @param {string} str - The string to convert
+ * @returns {string} The title-cased string
  */
-export const toTitleCase = (str: string): string => {
+export const toTitleCase = (str) => {
   if (!str) return '';
   return str
     .toLowerCase()
@@ -221,10 +223,10 @@ export const toTitleCase = (str: string): string => {
 
 /**
  * Generate a random ID
- * @param length - The length of the ID (default: 20)
- * @returns A random ID string
+ * @param {number} [length=20] - The length of the ID
+ * @returns {string} A random ID string
  */
-export const generateId = (length: number = 20): string => {
+export const generateId = (length = 20) => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   
@@ -237,17 +239,15 @@ export const generateId = (length: number = 20): string => {
 
 /**
  * Debounce a function
- * @param func - The function to debounce
- * @param wait - The number of milliseconds to wait
- * @returns A debounced function
+ * @param {Function} func - The function to debounce
+ * @param {number} wait - The number of milliseconds to wait
+ * @returns {Function} A debounced function
  */
-export const debounce = <F extends (...args: any[]) => any>(
-  func: F,
-  wait: number
-): ((...args: Parameters<F>) => void) => {
-  let timeout: NodeJS.Timeout;
+export const debounce = (func, wait) => {
+  /** @type {NodeJS.Timeout} */
+  let timeout;
   
-  return function executedFunction(...args: Parameters<F>) {
+  return function executedFunction(...args) {
     const later = () => {
       clearTimeout(timeout);
       func(...args);
@@ -260,17 +260,14 @@ export const debounce = <F extends (...args: any[]) => any>(
 
 /**
  * Throttle a function
- * @param func - The function to throttle
- * @param limit - The time limit in milliseconds
- * @returns A throttled function
+ * @param {Function} func - The function to throttle
+ * @param {number} limit - The time limit in milliseconds
+ * @returns {Function} A throttled function
  */
-export const throttle = <F extends (...args: any[]) => any>(
-  func: F,
-  limit: number
-): ((...args: Parameters<F>) => void) => {
+export const throttle = (func, limit) => {
   let inThrottle = false;
   
-  return function executedFunction(...args: Parameters<F>) {
+  return function executedFunction(...args) {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
@@ -284,20 +281,20 @@ export const throttle = <F extends (...args: any[]) => any>(
 
 /**
  * Check if a string is a valid email address
- * @param email - The email address to validate
- * @returns True if the email is valid
+ * @param {string} email - The email address to validate
+ * @returns {boolean} True if the email is valid
  */
-export const isValidEmail = (email: string): boolean => {
+export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
 /**
  * Check if a string is a valid URL
- * @param url - The URL to validate
- * @returns True if the URL is valid
+ * @param {string} url - The URL to validate
+ * @returns {boolean} True if the URL is valid
  */
-export const isValidUrl = (url: string): boolean => {
+export const isValidUrl = (url) => {
   try {
     new URL(url);
     return true;
@@ -308,10 +305,10 @@ export const isValidUrl = (url: string): boolean => {
 
 /**
  * Get the initials from a full name
- * @param name - The full name
- * @returns The initials (e.g., "John Doe" -> "JD")
+ * @param {string} name - The full name
+ * @returns {string} The initials (e.g., "John Doe" -> "JD")
  */
-export const getInitials = (name: string): string => {
+export const getInitials = (name) => {
   if (!name) return '';
   
   return name
@@ -323,34 +320,34 @@ export const getInitials = (name: string): string => {
 
 /**
  * Format a number with commas as thousands separators
- * @param num - The number to format
- * @returns The formatted number as a string
+ * @param {number} num - The number to format
+ * @returns {string} The formatted number as a string
  */
-export const formatNumber = (num: number): string => {
+export const formatNumber = (num) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 /**
  * Convert a file to a base64 string
- * @param file - The file to convert
- * @returns A promise that resolves to the base64 string
+ * @param {File} file - The file to convert
+ * @returns {Promise<string>} A promise that resolves to the base64 string
  */
-export const fileToBase64 = (file: File): Promise<string> => {
+export const fileToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
+    reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
   });
 };
 
 /**
  * Convert a base64 string to a Blob
- * @param base64 - The base64 string
- * @param type - The MIME type of the file
- * @returns A Blob object
+ * @param {string} base64 - The base64 string
+ * @param {string} type - The MIME type of the file
+ * @returns {Blob} A Blob object
  */
-export const base64ToBlob = (base64: string, type: string): Blob => {
+export const base64ToBlob = (base64, type) => {
   const byteString = atob(base64.split(',')[1]);
   const ab = new ArrayBuffer(byteString.length);
   const ia = new Uint8Array(ab);
@@ -364,9 +361,9 @@ export const base64ToBlob = (base64: string, type: string): Blob => {
 
 /**
  * Generate a random color in hex format
- * @returns A random hex color code
+ * @returns {string} A random hex color code
  */
-export const getRandomColor = (): string => {
+export const getRandomColor = () => {
   const letters = '0123456789ABCDEF';
   let color = '#';
   
@@ -379,10 +376,10 @@ export const getRandomColor = (): string => {
 
 /**
  * Get a contrasting text color (black or white) for a given background color
- * @param hexColor - The background color in hex format
- * @returns '#000000' for light backgrounds, '#FFFFFF' for dark backgrounds
+ * @param {string} hexColor - The background color in hex format
+ * @returns {string} '#000000' for light backgrounds, '#FFFFFF' for dark backgrounds
  */
-export const getContrastTextColor = (hexColor: string): string => {
+export const getContrastTextColor = (hexColor) => {
   // Remove the '#' if it exists
   const hex = hexColor.replace('#', '');
   
@@ -400,32 +397,33 @@ export const getContrastTextColor = (hexColor: string): string => {
 
 /**
  * Deep clone an object
- * @param obj - The object to clone
- * @returns A deep clone of the object
+ * @template T
+ * @param {T} obj - The object to clone
+ * @returns {T} A deep clone of the object
  */
-export const deepClone = <T>(obj: T): T => {
+export const deepClone = (obj) => {
   return JSON.parse(JSON.stringify(obj));
 };
 
 /**
  * Check if two objects are deeply equal
- * @param obj1 - The first object
- * @param obj2 - The second object
- * @returns True if the objects are deeply equal
+ * @param {*} obj1 - The first object
+ * @param {*} obj2 - The second object
+ * @returns {boolean} True if the objects are deeply equal
  */
-export const deepEqual = (obj1: any, obj2: any): boolean => {
+export const deepEqual = (obj1, obj2) => {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 };
 
 /**
  * Get the value at a specific path in an object
- * @param obj - The object to query
- * @param path - The path of the property to get (e.g., 'user.profile.name')
- * @param defaultValue - The default value to return if the path doesn't exist
- * @returns The value at the specified path or the default value
+ * @param {Object} obj - The object to query
+ * @param {string} path - The path of the property to get (e.g., 'user.profile.name')
+ * @param {*} [defaultValue] - The default value to return if the path doesn't exist
+ * @returns {*} The value at the specified path or the default value
  */
-export const get = (obj: any, path: string, defaultValue: any = undefined): any => {
-  const travel = (regexp: RegExp) =>
+export const get = (obj, path, defaultValue) => {
+  const travel = (regexp) =>
     String.prototype.split
       .call(path, regexp)
       .filter(Boolean)
@@ -437,17 +435,17 @@ export const get = (obj: any, path: string, defaultValue: any = undefined): any 
 
 /**
  * Set a value at a specific path in an object
- * @param obj - The object to modify
- * @param path - The path of the property to set (e.g., 'user.profile.name')
- * @param value - The value to set
- * @returns A new object with the updated value
+ * @param {Object} obj - The object to modify
+ * @param {string} path - The path of the property to set (e.g., 'user.profile.name')
+ * @param {*} value - The value to set
+ * @returns {Object} A new object with the updated value
  */
-export const set = (obj: any, path: string, value: any): any => {
+export const set = (obj, path, value) => {
   if (Object(obj) !== obj) return obj; // When obj is not an object
   if (typeof path === 'undefined') return obj;
   
   const keys = path.split('.');
-  let current = { ...obj };
+  const current = { ...obj };
   let ref = current;
   
   for (let i = 0; i < keys.length - 1; i++) {

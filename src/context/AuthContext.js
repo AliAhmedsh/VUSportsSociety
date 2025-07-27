@@ -1,27 +1,29 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
-type User = {
-  uid: string;
-  email: string;
-  displayName: string;
-  role: 'participant' | 'coach' | 'admin';
-  approved: boolean;
-  password?: string; // Only for dummy data
-};
+/**
+ * @typedef {Object} User
+ * @property {string} uid - The user's unique identifier
+ * @property {string} email - The user's email address
+ * @property {string} displayName - The user's display name
+ * @property {'participant'|'coach'|'admin'} role - The user's role
+ * @property {boolean} approved - Whether the user is approved
+ * @property {string} [password] - Password (only for dummy data)
+ */
 
-type AuthContextType = {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, displayName: string, role: 'participant' | 'coach') => Promise<void>;
-  logout: () => Promise<void>;
-};
+/**
+ * @typedef {Object} AuthContextType
+ * @property {User|null} user - The current user or null if not authenticated
+ * @property {boolean} loading - Whether auth state is being loaded
+ * @property {function(string, string): Promise<void>} login - Function to log in a user
+ * @property {function(string, string, string, 'participant'|'coach'): Promise<void>} register - Function to register a new user
+ * @property {function(): Promise<void>} logout - Function to log out the current user
+ */
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext(undefined);
 
 // Dummy users data
-const DUMMY_USERS: User[] = [
+const DUMMY_USERS = [
   {
     uid: '1',
     email: 'participant@example.com',
@@ -48,21 +50,21 @@ const DUMMY_USERS: User[] = [
   },
 ];
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children } ) {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<User[]>(DUMMY_USERS);
+  const [users, setUsers] = useState(DUMMY_USERS);
 
   // Simulate auto-login on app start
   useEffect(() => {
     // Auto-login the first user for demo purposes
     const demoUser = DUMMY_USERS[0];
     const { password: _, ...userWithoutPassword } = demoUser;
-    setUser(userWithoutPassword as User);
+    setUser(userWithoutPassword );
     setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     try {
       setLoading(true);
       
@@ -79,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (foundUser) {
         // Create a copy without the password
         const { password: _, ...userWithoutPassword } = foundUser;
-        setUser(userWithoutPassword as User);
+        setUser(userWithoutPassword);
         console.log('Login successful:', userWithoutPassword);
       } else {
         console.log('Login failed - user not found or invalid credentials');
@@ -93,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (email: string, password: string, displayName: string, role: 'participant' | 'coach') => {
+  const register = async (email, password, displayName, role) => {
     setLoading(true);
     
     // Simulate API call delay
@@ -105,7 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error('Email already in use');
     }
     
-    const newUser: User = {
+    const newUser = {
       uid: `user-${Date.now()}`,
       email,
       displayName,
@@ -118,7 +120,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // Auto-login after registration
     const { password: _, ...userWithoutPassword } = newUser;
-    setUser(userWithoutPassword as User);
+    setUser(userWithoutPassword );
     setLoading(false);
   };
 
@@ -135,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useAuth(): AuthContextType {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

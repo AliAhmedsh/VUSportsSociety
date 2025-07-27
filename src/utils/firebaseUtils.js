@@ -17,7 +17,7 @@ export const getCurrentUser = () => {
  * Check if a user is authenticated
  * @returns True if the user is authenticated, false otherwise
  */
-export const isAuthenticated = (): boolean => {
+export const isAuthenticated = () => {
   return auth().currentUser !== null;
 };
 
@@ -25,7 +25,7 @@ export const isAuthenticated = (): boolean => {
  * Sign out the current user
  * @returns A promise that resolves when the user is signed out
  */
-export const signOut = async (): Promise<void> => {
+export const signOut = async () => {
   try {
     await auth().signOut();
   } catch (error) {
@@ -40,10 +40,10 @@ export const signOut = async (): Promise<void> => {
  * @param id - The document ID
  * @returns A promise that resolves to the document data or null if not found
  */
-export const getDocument = async <T>(
-  collection: string,
-  id: string
-): Promise<T | null> => {
+export const getDocument = async(
+  collection,
+  id
+)=> {
   try {
     const doc = await firestore().collection(collection).doc(id).get();
     
@@ -54,7 +54,7 @@ export const getDocument = async <T>(
     return {
       id: doc.id,
       ...doc.data(),
-    } as T;
+    } ;
   } catch (error) {
     console.error(`Error getting ${collection} document:`, error);
     throw error;
@@ -67,12 +67,11 @@ export const getDocument = async <T>(
  * @param query - Optional query constraints
  * @returns A promise that resolves to an array of documents
  */
-export const getDocuments = async <T>(
-  collection: string,
-  query: (ref: FirebaseFirestoreTypes.Query) => FirebaseFirestoreTypes.Query = ref => ref
-): Promise<T[]> => {
+export const getDocuments = async(
+  collection,
+  query) => {
   try {
-    let ref = firestore().collection(collection) as FirebaseFirestoreTypes.Query;
+    let ref = firestore().collection(collection)
     ref = query(ref);
     
     const snapshot = await ref.get();
@@ -80,7 +79,7 @@ export const getDocuments = async <T>(
     return snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-    })) as T[];
+    }));
   } catch (error) {
     console.error(`Error getting ${collection} documents:`, error);
     throw error;
@@ -93,10 +92,10 @@ export const getDocuments = async <T>(
  * @param data - The document data
  * @returns A promise that resolves to the document ID
  */
-export const addDocument = async <T extends Record<string, any>>(
-  collection: string,
-  data: T
-): Promise<string> => {
+export const addDocument = async(
+  collection,
+  data
+) => {
   try {
     const docRef = await firestore().collection(collection).add({
       ...data,
@@ -113,16 +112,12 @@ export const addDocument = async <T extends Record<string, any>>(
 
 /**
  * Update a Firestore document
- * @param collection - The collection name
- * @param id - The document ID
- * @param data - The document data to update
- * @returns A promise that resolves when the update is complete
+ * @param {string} collection - The collection name
+ * @param {string} id - The document ID
+ * @param {Object} data - The document data to update
+ * @returns {Promise<void>} A promise that resolves when the update is complete
  */
-export const updateDocument = async <T extends Record<string, any>>(
-  collection: string,
-  id: string,
-  data: Partial<T>
-): Promise<void> => {
+export const updateDocument = async (collection, id, data) => {
   try {
     await firestore().collection(collection).doc(id).update({
       ...data,
@@ -136,14 +131,11 @@ export const updateDocument = async <T extends Record<string, any>>(
 
 /**
  * Delete a Firestore document
- * @param collection - The collection name
- * @param id - The document ID
- * @returns A promise that resolves when the delete is complete
+ * @param {string} collection - The collection name
+ * @param {string} id - The document ID
+ * @returns {Promise<void>} A promise that resolves when the delete is complete
  */
-export const deleteDocument = async (
-  collection: string,
-  id: string
-): Promise<void> => {
+export const deleteDocument = async (collection, id) => {
   try {
     await firestore().collection(collection).doc(id).delete();
   } catch (error) {
@@ -157,13 +149,12 @@ export const deleteDocument = async (
  * @param path - The storage path (e.g., 'profile-pictures', 'event-images')
  * @param file - The file to upload (either a React Native file object or a Blob)
  * @param metadata - Optional metadata for the file
- * @returns A promise that resolves to the download URL
+ * @param {string} path - The storage path
+ * @param {Object} file - The file to upload
+ * @param {Object} [metadata={}] - Optional metadata for the file
+ * @returns {Promise<string>} A promise that resolves to the download URL
  */
-export const uploadFile = async (
-  path: string,
-  file: any,
-  metadata: any = {}
-): Promise<string> => {
+export const uploadFile = async (path, file, metadata = {}) => {
   try {
     // Generate a unique filename
     const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -200,9 +191,10 @@ export const uploadFile = async (
 /**
  * Delete a file from Firebase Storage
  * @param url - The download URL of the file to delete
- * @returns A promise that resolves when the file is deleted
+ * @param {string} url - The download URL of the file to delete
+ * @returns {Promise<void>} A promise that resolves when the file is deleted
  */
-export const deleteFile = async (url: string): Promise<void> => {
+export const deleteFile = async (url) => {
   try {
     // Extract the path from the download URL
     const matches = url.match(/o\/(.*?)\?/);
@@ -225,13 +217,12 @@ export const deleteFile = async (url: string): Promise<void> => {
  * @param collection - The collection name
  * @param id - The document ID
  * @param callback - The callback function to call when the document changes
- * @returns An unsubscribe function
+ * @param {string} collection - The collection name
+ * @param {string} id - The document ID
+ * @param {Function} callback - The callback function to call when the document changes
+ * @returns {Function} An unsubscribe function
  */
-export const subscribeToDocument = <T>(
-  collection: string,
-  id: string,
-  callback: (data: T | null) => void
-): (() => void) => {
+export const subscribeToDocument = (collection, id, callback) => {
   return firestore()
     .collection(collection)
     .doc(id)
@@ -241,7 +232,7 @@ export const subscribeToDocument = <T>(
           callback({
             id: snapshot.id,
             ...snapshot.data(),
-          } as T);
+          });
         } else {
           callback(null);
         }
@@ -257,22 +248,21 @@ export const subscribeToDocument = <T>(
  * @param collection - The collection name
  * @param query - Optional query constraints
  * @param callback - The callback function to call when the collection changes
- * @returns An unsubscribe function
+ * @param {string} collection - The collection name
+ * @param {Function} [query=ref=>ref] - Optional query constraints
+ * @param {Function} callback - The callback function to call when the collection changes
+ * @returns {Function} An unsubscribe function
  */
-export const subscribeToCollection = <T>(
-  collection: string,
-  query: (ref: FirebaseFirestoreTypes.Query) => FirebaseFirestoreTypes.Query = ref => ref,
-  callback: (data: T[]) => void
-): (() => void) => {
-  let ref = firestore().collection(collection) as FirebaseFirestoreTypes.Query;
+export const subscribeToCollection = (collection, query = ref => ref, callback) => {
+  let ref = firestore().collection(collection);
   ref = query(ref);
   
   return ref.onSnapshot(
     (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
-      })) as T[];
+        ...doc.data()
+      }));
       
       callback(data);
     },
@@ -285,9 +275,10 @@ export const subscribeToCollection = <T>(
 /**
  * Convert a Firestore timestamp to a JavaScript Date
  * @param timestamp - The Firestore timestamp
- * @returns A JavaScript Date object
+ * @param {any} timestamp - The Firestore timestamp
+ * @returns {Date|null} A JavaScript Date object or null if invalid
  */
-export const toDate = (timestamp: any): Date | null => {
+export const toDate = (timestamp) => {
   if (!timestamp) return null;
   
   if (timestamp instanceof Date) {
@@ -312,9 +303,10 @@ export const toDate = (timestamp: any): Date | null => {
 /**
  * Convert a JavaScript Date to a Firestore timestamp
  * @param date - The JavaScript Date
- * @returns A Firestore timestamp
+ * @param {Date|string|number|null} date - The date to convert
+ * @returns {any} A Firestore timestamp
  */
-export const toTimestamp = (date: Date | string | number | null): any => {
+export const toTimestamp = (date) => {
   if (!date) return firestore.FieldValue.serverTimestamp();
   
   if (date instanceof Date) {
@@ -331,15 +323,13 @@ export const toTimestamp = (date: Date | string | number | null): any => {
 /**
  * Batch update multiple documents
  * @param updates - Array of update operations
- * @returns A promise that resolves when the batch is committed
+ * @param {Array<Object>} updates - Array of update operations
+ * @param {string} updates[].collection - The collection name
+ * @param {string} updates[].id - The document ID
+ * @param {Object} updates[].data - The data to update
+ * @returns {Promise<void>} A promise that resolves when the batch is committed
  */
-export const batchUpdate = async (
-  updates: Array<{
-    collection: string;
-    id: string;
-    data: Record<string, any>;
-  }>
-): Promise<void> => {
+export const batchUpdate = async (updates) => {
   const batch = firestore().batch();
   
   updates.forEach(({ collection, id, data }) => {
@@ -356,11 +346,10 @@ export const batchUpdate = async (
 /**
  * Run a Firestore transaction
  * @param updateFunction - The update function to run in the transaction
- * @returns A promise that resolves with the result of the update function
+ * @param {Function} updateFunction - The update function to run in the transaction
+ * @returns {Promise<any>} A promise that resolves with the result of the update function
  */
-export const runTransaction = async <T>(
-  updateFunction: (transaction: FirebaseFirestoreTypes.Transaction) => Promise<T>
-): Promise<T> => {
+export const runTransaction = async (updateFunction) => {
   return await firestore().runTransaction(updateFunction);
 };
 
@@ -368,17 +357,15 @@ export const runTransaction = async <T>(
  * Create a Firestore query with pagination
  * @param collection - The collection name
  * @param options - Pagination options
- * @returns An object with the query and methods for pagination
+ * @param {string} collection - The collection name
+ * @param {Object} [options={}] - Pagination options
+ * @param {number} [options.limit=10] - Number of items per page
+ * @param {string} [options.orderBy='createdAt'] - Field to order by
+ * @param {'asc'|'desc'} [options.orderDirection='desc'] - Sort direction
+ * @param {Array<Array>} [options.where=[]] - Array of where conditions [field, operator, value]
+ * @returns {Object} An object with the query and methods for pagination
  */
-export const createPaginatedQuery = (
-  collection: string,
-  options: {
-    limit?: number;
-    orderBy?: string;
-    orderDirection?: 'asc' | 'desc';
-    where?: Array<[string, FirebaseFirestoreTypes.WhereFilterOp, any]>;
-  } = {}
-) => {
+export const createPaginatedQuery = (collection, options = {}) => {
   const {
     limit = 10,
     orderBy = 'createdAt',
@@ -389,7 +376,7 @@ export const createPaginatedQuery = (
   let query = firestore()
     .collection(collection)
     .orderBy(orderBy, orderDirection)
-    .limit(limit) as FirebaseFirestoreTypes.Query;
+    .limit(limit);
   
   // Apply where conditions
   where.forEach(([field, operator, value]) => {
@@ -398,12 +385,12 @@ export const createPaginatedQuery = (
   
   return {
     query,
-    getNextPage: async (lastVisible: any) => {
+    getNextPage: async (lastVisible) => {
       let nextQuery = firestore()
         .collection(collection)
         .orderBy(orderBy, orderDirection)
         .startAfter(lastVisible)
-        .limit(limit) as FirebaseFirestoreTypes.Query;
+        .limit(limit);
       
       // Apply where conditions
       where.forEach(([field, operator, value]) => {

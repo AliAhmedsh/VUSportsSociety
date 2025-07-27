@@ -23,7 +23,7 @@ export default function LoginScreen() {
       setLoading(true);
       await login(email, password);
       // Navigation will be handled by the AuthContext
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert('Login Failed', error.message);
     } finally {
       setLoading(false);

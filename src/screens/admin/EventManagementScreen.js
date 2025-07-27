@@ -25,20 +25,9 @@ import { RootStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import { Event } from '../../types/Event';
-import { format, isAfter, isBefore, isToday, parseISO } from 'date-fns';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { format, isAfter, isBefore, isToday } from 'date-fns';
 
-type EventManagementScreenNavigationProp = StackNavigationProp<RootStackParamList, 'EventManagement'>;
-type EventManagementScreenRouteProp = RouteProp<RootStackParamList, 'EventManagement'>;
-
-interface EventManagementScreenProps {
-  navigation: EventManagementScreenNavigationProp;
-  route: EventManagementScreenRouteProp;
-}
-
-type EventStatus = 'all' | 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-
-const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigation, route }) => {
+const EventManagementScreen= ({ navigation, route }) => {
   const theme = useTheme();
   const { user } = useAuth();
   
@@ -46,17 +35,17 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [events, setEvents] = useState<Event[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [menuVisible, setMenuVisible] = useState<string | null>(null);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<EventStatus>('upcoming');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState('upcoming');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState([]);
   
   // Filter events based on search query and status
   useEffect(() => {
@@ -122,10 +111,10 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
         registrationDeadline: doc.data().registrationDeadline,
         createdAt: doc.data().createdAt?.toDate(),
         updatedAt: doc.data().updatedAt?.toDate(),
-      } as Event));
+      } ));
       
       // Extract unique categories
-      const categories = new Set<string>();
+      const categories = new Set();
       eventsList.forEach(event => {
         if (event.category) {
           categories.add(event.category);
@@ -167,7 +156,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
           registrationDeadline: doc.data().registrationDeadline,
           createdAt: doc.data().createdAt?.toDate(),
           updatedAt: doc.data().updatedAt?.toDate(),
-        } as Event));
+        } ));
         
         setEvents(eventsList);
       }, error => {
@@ -179,7 +168,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
   }, []);
   
   // Helper functions
-  const showSnackbar = (message: string) => {
+  const showSnackbar = (message) => {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
   };
@@ -189,11 +178,11 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
     fetchEvents();
   };
   
-  const handleEditEvent = (event: Event) => {
+  const handleEditEvent = (event) => {
     navigation.navigate('EditEvent', { eventId: event.id });
   };
   
-  const handleViewEvent = (event: Event) => {
+  const handleViewEvent = (event) => {
     navigation.navigate('EventDetails', { eventId: event.id });
   };
   
@@ -219,7 +208,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
     }
   };
   
-  const toggleEventStatus = async (event: Event, newStatus: 'active' | 'cancelled') => {
+  const toggleEventStatus = async (event, newStatus) => {
     try {
       setActionLoading(true);
       
@@ -239,7 +228,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
     }
   };
   
-  const toggleCategory = (category: string) => {
+  const toggleCategory = (category) => {
     setSelectedCategories(prev => 
       prev.includes(category)
         ? prev.filter(c => c !== category)
@@ -247,7 +236,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
     );
   };
   
-  const getEventStatus = (event: Event) => {
+  const getEventStatus = (event) => {
     const now = new Date();
     const startDate = event.startTime?.toDate ? event.startTime.toDate() : new Date(0);
     const endDate = event.endTime?.toDate ? event.endTime.toDate() : new Date(0);
@@ -258,7 +247,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
     return 'upcoming';
   };
   
-  const renderEventCard = (event: Event) => {
+  const renderEventCard = (event) => {
     const status = getEventStatus(event);
     const startDate = event.startTime?.toDate ? event.startTime.toDate() : new Date(0);
     const endDate = event.endTime?.toDate ? event.endTime.toDate() : new Date(0);
@@ -461,7 +450,7 @@ const EventManagementScreen: React.FC<EventManagementScreenProps> = ({ navigatio
         >
           <SegmentedButtons
             value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as EventStatus)}
+            onValueChange={(value) => setStatusFilter(value)}
             buttons={[
               { value: 'all', label: 'All' },
               { value: 'upcoming', label: 'Upcoming' },

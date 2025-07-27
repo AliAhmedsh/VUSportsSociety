@@ -3,26 +3,19 @@ import { View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { Picker as RNPicker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@react-native-vector-icons/MaterialCommunityIcons';
 
-interface PickerItem {
-  label: string;
-  value: string | number;
-}
+import PropTypes from 'prop-types';
 
-interface CustomPickerProps {
-  label: string;
-  selectedValue: string | number;
-  onValueChange: (itemValue: string | number) => void;
-  items: PickerItem[];
-  disabled?: boolean;
-  error?: boolean;
-  helperText?: string;
-  placeholder?: string;
-  icon?: string;
-}
+const PickerItemShape = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+};
 
-const CustomPicker: React.FC<CustomPickerProps> = ({
+const CustomPicker = ({
   label,
   selectedValue,
   onValueChange,
@@ -272,5 +265,28 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
+
+CustomPicker.propTypes = {
+  label: PropTypes.string.isRequired,
+  selectedValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  onValueChange: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape(PickerItemShape)).isRequired,
+  disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  placeholder: PropTypes.string,
+  icon: PropTypes.string,
+};
+
+CustomPicker.defaultProps = {
+  disabled: false,
+  error: false,
+  helperText: '',
+  placeholder: '',
+  icon: null,
+};
 
 export default CustomPicker;

@@ -1,14 +1,19 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Team } from '../types';
+// Team type definition moved to JSDoc
 import firestore from '@react-native-firebase/firestore';
 
-export const useTeams = (userId: string) => {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [myTeams, setMyTeams] = useState<Team[]>([]);
+/**
+ * Custom hook to manage teams data
+ * @param {string} userId - The ID of the current user
+ * @returns {Object} Teams data and related state and functions
+ */
+export const useTeams = (userId) => {
+  const [teams, setTeams] = useState([]);
+  const [myTeams, setMyTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [sports, setSports] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [sports, setSports] = useState([]);
+  const [error, setError] = useState(null);
 
   const fetchTeams = useCallback(async () => {
     try {
@@ -21,7 +26,7 @@ export const useTeams = (userId: string) => {
       const teamsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      })) as Team[];
+      })) ;
 
       setTeams(teamsData);
       
@@ -52,7 +57,7 @@ export const useTeams = (userId: string) => {
     fetchTeams();
   }, [fetchTeams]);
 
-  const handleJoinTeam = useCallback(async (teamId: string) => {
+  const handleJoinTeam = useCallback(async (teamId) => {
     if (!userId) return { success: false, message: 'User not authenticated' };
     
     try {
@@ -63,7 +68,7 @@ export const useTeams = (userId: string) => {
         return { success: false, message: 'Team not found' };
       }
       
-      const team = teamDoc.data() as Team;
+      const team = teamDoc.data();
       const isMember = team.members?.includes(userId) || false;
       
       if (isMember) {
@@ -101,7 +106,7 @@ export const useTeams = (userId: string) => {
           const updatedTeams = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
-          })) as Team[];
+          })) ;
           
           setTeams(updatedTeams);
           

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/types';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 
 
 const HomeScreen = () => {

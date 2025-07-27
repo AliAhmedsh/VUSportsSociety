@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert , ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from './navigation/types';
@@ -8,32 +8,19 @@ import { Avatar, Button, Card, Divider, List, Menu, Portal, Dialog, TextInput } 
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
-type UserProfile = {
-  uid: string;
-  email: string;
-  displayName: string;
-  role: 'participant' | 'coach' | 'admin';
-  approved: boolean;
-  phoneNumber?: string;
-  bio?: string;
-  sportsInterests?: string[];
-  achievements?: string[];
-  createdAt?: any;
-  updatedAt?: any;
-};
+
 
 const ProfileScreen = () => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [editField, setEditField] = useState<{key: keyof UserProfile; value: any} | null>(null);
+  const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState('');
   
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const navigation = useNavigation();
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -43,7 +30,7 @@ const ProfileScreen = () => {
       try {
         const userDoc = await firestore().collection('users').doc(user.uid).get();
         if (userDoc.exists) {
-          setUserProfile(userDoc.data() as UserProfile);
+          setUserProfile(userDoc.data() );
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -56,7 +43,7 @@ const ProfileScreen = () => {
     fetchUserProfile();
   }, [user]);
 
-  const handleEditField = (field: keyof UserProfile, value: any) => {
+  const handleEditField = (field, value) => {
     setEditField({ key: field, value });
     setTempValue(Array.isArray(value) ? value.join(', ') : value || '');
     setDialogVisible(true);
@@ -66,11 +53,11 @@ const ProfileScreen = () => {
     if (!user || !editField) return;
     
     try {
-      let valueToSave: any = tempValue;
+      let valueToSave = tempValue;
       
       // Handle array fields
       if (Array.isArray(editField.value)) {
-        valueToSave = tempValue.split(',').map((item: string) => item.trim()).filter(Boolean);
+        valueToSave = tempValue.split(',').map((item) => item.trim()).filter(Boolean);
       }
       
       // Update in Firestore
@@ -81,7 +68,7 @@ const ProfileScreen = () => {
       
       // Update local state
       setUserProfile(prev => ({
-        ...prev!,
+        ...prev,
         [editField.key]: valueToSave,
       }));
       
@@ -109,7 +96,7 @@ const ProfileScreen = () => {
     }
   };
 
-  const renderProfileField = (label: string, field: keyof UserProfile, value: any) => {
+  const renderProfileField = (label, field, value) => {
     if (field === 'uid' || field === 'email' || field === 'createdAt' || field === 'updatedAt') {
       return null; // Skip these fields
     }

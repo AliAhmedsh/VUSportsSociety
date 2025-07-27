@@ -6,15 +6,37 @@ export * from './firebaseUtils';
 export * from './uiUtils';
 export * from './notificationUtils';
 
-// Common types
-export type { 
-  ApiResponse, 
-  PaginatedResponse, 
-  SelectOption, 
-  ValidationError, 
-  FormErrors, 
-  FormField 
-} from '../types';
+/**
+ * Common type definitions (JSDoc style)
+ * @typedef {Object} ApiResponse
+ * @property {boolean} success - Whether the API request was successful
+ * @property {*} [data] - Response data if successful
+ * @property {string} [error] - Error message if request failed
+ * 
+ * @typedef {Object} PaginatedResponse
+ * @property {Array} items - Array of paginated items
+ * @property {number} total - Total number of items
+ * @property {number} page - Current page number
+ * @property {number} limit - Items per page
+ * @property {number} totalPages - Total number of pages
+ * 
+ * @typedef {Object} SelectOption
+ * @property {string|number} value - The option value
+ * @property {string} label - The display label
+ * @property {boolean} [disabled] - Whether the option is disabled
+ * 
+ * @typedef {Object.<string, string>} ValidationError
+ * 
+ * @typedef {Object.<string, string>} FormErrors
+ * 
+ * @typedef {Object} FormField
+ * @property {string} name - Field name
+ * @property {string} [label] - Field label
+ * @property {string} [placeholder] - Field placeholder
+ * @property {string} [type] - Input type
+ * @property {boolean} [required] - Whether the field is required
+ * @property {Function} [validate] - Custom validation function
+ */
 
 // Common date utilities
 export { 
@@ -130,4 +152,24 @@ export {
 } from '@hookform/resolvers/yup';
 
 import * as yup from 'yup';
+
 export { yup };
+
+// Export all common types for JSDoc
+/** @type {ApiResponse} */
+export const ApiResponseType = {};
+
+/** @type {PaginatedResponse} */
+export const PaginatedResponseType = {};
+
+/** @type {SelectOption} */
+export const SelectOptionType = {};
+
+/** @type {ValidationError} */
+export const ValidationErrorType = {};
+
+/** @type {FormErrors} */
+export const FormErrorsType = {};
+
+/** @type {FormField} */
+export const FormFieldType = {};
