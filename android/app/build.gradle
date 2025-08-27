@@ -113,7 +113,12 @@ dependencies {
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
+        implementation project(':react-native-vector-icons')
+
     } else {
         implementation jscFlavor
     }
 }
+
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")

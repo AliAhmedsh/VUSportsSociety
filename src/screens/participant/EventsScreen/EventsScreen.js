@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../context/AuthContext';
 import firestore from '@react-native-firebase/firestore';
+import { events_dummy } from '../../../utils/dummy';
 
 const EventsScreen = () => {
   const navigation = useNavigation();
@@ -16,18 +25,18 @@ const EventsScreen = () => {
     try {
       const eventsRef = firestore().collection('events');
       let query = eventsRef.where('status', 'in', ['upcoming', 'ongoing']);
-      
+
       if (selectedFilter !== 'all') {
         query = query.where('type', '==', selectedFilter);
       }
-      
+
       const snapshot = await query.orderBy('date', 'asc').get();
-      
+
       const eventsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-      
+
       setEvents(eventsData);
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -47,22 +56,26 @@ const EventsScreen = () => {
   };
 
   const renderEventItem = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.eventCard}
       onPress={() => navigation.navigate('EventDetails', { eventId: item.id })}
     >
       <View style={styles.eventHeader}>
         <Text style={styles.eventTitle}>{item.title}</Text>
-        <View style={[
-          styles.eventBadge, 
-          item.status === 'upcoming' ? styles.upcomingBadge : styles.ongoingBadge
-        ]}>
+        <View
+          style={[
+            styles.eventBadge,
+            item.status === 'upcoming'
+              ? styles.upcomingBadge
+              : styles.ongoingBadge,
+          ]}
+        >
           <Text style={styles.badgeText}>
             {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.eventDetails}>
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Date:</Text>
@@ -73,33 +86,38 @@ const EventsScreen = () => {
               month: 'short',
               day: 'numeric',
               hour: '2-digit',
-              minute: '2-digit'
+              minute: '2-digit',
             })}
           </Text>
         </View>
-        
+
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Location:</Text>
           <Text style={styles.detailValue}>{item.location}</Text>
         </View>
-        
+
         <View style={styles.detailRow}>
           <Text style={styles.detailLabel}>Type:</Text>
           <Text style={styles.detailValue}>
             {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
           </Text>
         </View>
-        
+
         <View style={styles.participationContainer}>
           <View style={styles.participationBar}>
-            <View 
+            <View
               style={[
-                styles.participationFill, 
-                { 
-                  width: `${(item.currentParticipants / item.maxParticipants) * 100}%`,
-                  backgroundColor: item.currentParticipants >= item.maxParticipants ? '#f44336' : '#4caf50'
-                }
-              ]} 
+                styles.participationFill,
+                {
+                  width: `${
+                    (item.currentParticipants / item.maxParticipants) * 100
+                  }%`,
+                  backgroundColor:
+                    item.currentParticipants >= item.maxParticipants
+                      ? '#f44336'
+                      : '#4caf50',
+                },
+              ]}
             />
           </View>
           <Text style={styles.participationText}>
@@ -121,19 +139,21 @@ const EventsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
-        {['all', 'tournament', 'friendly', 'training', 'other'].map((filter) => (
+        {['all', 'tournament', 'friendly', 'training', 'other'].map(filter => (
           <TouchableOpacity
             key={filter}
             style={[
               styles.filterButton,
-              selectedFilter === filter && styles.filterButtonActive
+              selectedFilter === filter && styles.filterButtonActive,
             ]}
             onPress={() => setSelectedFilter(filter)}
           >
-            <Text style={[
-              styles.filterButtonText,
-              selectedFilter === filter && styles.filterButtonTextActive
-            ]}>
+            <Text
+              style={[
+                styles.filterButtonText,
+                selectedFilter === filter && styles.filterButtonTextActive,
+              ]}
+            >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </Text>
           </TouchableOpacity>
@@ -141,9 +161,9 @@ const EventsScreen = () => {
       </View>
 
       <FlatList
-        data={events}
+        data={events_dummy}
         renderItem={renderEventItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl

@@ -1,18 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/types';
 import { useAuth } from '../../../context/AuthContext';
-
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
 
   const upcomingEvents = [
-    { id: '1', title: 'Football Tournament', date: '2023-08-15', type: 'tournament' },
-    { id: '2', title: 'Basketball Practice', date: '2023-08-16', type: 'practice' },
+    {
+      id: '1',
+      title: 'Football Tournament',
+      date: '2023-08-15',
+      type: 'tournament',
+    },
+    {
+      id: '2',
+      title: 'Basketball Practice',
+      date: '2023-08-16',
+      type: 'practice',
+    },
     { id: '3', title: 'Cricket Match', date: '2023-08-18', type: 'match' },
   ];
 
@@ -33,16 +49,21 @@ const HomeScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.quickActions}>
-          {quickActions.map((action) => (
-            <TouchableOpacity 
+          {quickActions.map(action => (
+            <TouchableOpacity
               key={action.id}
               style={styles.actionCard}
-              onPress={() => navigation.navigate('Main', { screen: action.screen })}
+              onPress={() =>
+                navigation.navigate('Main', { screen: action.screen })
+              }
             >
               <View style={styles.actionIcon}>
                 <Text style={styles.actionIconText}>
-                  {action.icon === 'calendar' ? '📅' : 
-                   action.icon === 'people' ? '👥' : '👤'}
+                  {action.icon === 'calendar'
+                    ? '📅'
+                    : action.icon === 'people'
+                    ? '👥'
+                    : '👤'}
                 </Text>
               </View>
               <Text style={styles.actionText}>{action.title}</Text>
@@ -55,17 +76,23 @@ const HomeScreen = () => {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Upcoming Events</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Main', { screen: 'Events' })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Main', { screen: 'Events' })}
+          >
             <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>
         </View>
-        
-        {upcomingEvents.slice(0, 2).map((event) => (
+
+        {upcomingEvents.slice(0, 2).map(event => (
           <View key={event.id} style={styles.eventCard}>
             <View style={styles.eventDate}>
-              <Text style={styles.eventDateDay}>{new Date(event.date).getDate()}</Text>
+              <Text style={styles.eventDateDay}>
+                {new Date(event.date).getDate()}
+              </Text>
               <Text style={styles.eventDateMonth}>
-                {new Date(event.date).toLocaleString('default', { month: 'short' })}
+                {new Date(event.date).toLocaleString('default', {
+                  month: 'short',
+                })}
               </Text>
             </View>
             <View style={styles.eventDetails}>
@@ -84,7 +111,8 @@ const HomeScreen = () => {
         <View style={styles.announcementCard}>
           <Text style={styles.announcementTitle}>Registration Open</Text>
           <Text style={styles.announcementText}>
-            Registration for the annual sports gala is now open. Register your team before August 20th!
+            Registration for the annual sports gala is now open. Register your
+            team before August 20th!
           </Text>
           <Text style={styles.announcementDate}>2 days ago</Text>
         </View>

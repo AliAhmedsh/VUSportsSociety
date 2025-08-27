@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useAuth } from '../../context/AuthContext';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/types';
-
+import TopBar from '../../components/TopBar/TopBar';
+import Button from '../../components/Button/Button';
+import InputBar from '../../components/InputBar/InputBar';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -32,25 +39,17 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>VU Sports Society</Text>
+      <TopBar text={'VU Sports Society'} />
       <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
+        <InputBar placeholder="Email" value={email} onChange={setEmail} />
+        <InputBar
           value={password}
-          onChangeText={setPassword}
+          onChange={setPassword}
+          placeholder="Password"
           secureTextEntry
         />
-        <TouchableOpacity 
-          style={styles.button} 
+        <TouchableOpacity
+          style={styles.button}
           onPress={handleLogin}
           disabled={loading}
         >
@@ -58,12 +57,16 @@ export default function LoginScreen() {
             {loading ? 'Logging in...' : 'Login'}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.linkButton}
-          onPress={() => navigation.navigate('Register')}
-        >
-          <Text style={styles.linkText}>Don't have an account? Register here</Text>
-        </TouchableOpacity>
+        <View style={styles.footer}>
+          <Button
+            onPress={() => navigation.navigate('Register')}
+            title={'Sign up'}
+          />
+          <Button
+            onPress={() => Alert.alert('Coming Soon')}
+            title={'Continue as Guest'}
+          />
+        </View>
       </View>
     </View>
   );
@@ -72,8 +75,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
     backgroundColor: '#f5f5f5',
   },
   title: {
@@ -84,26 +85,22 @@ const styles = StyleSheet.create({
     color: '#1a73e8',
   },
   formContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 20,
   },
   input: {
-    height: 50,
+    height: 56,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#E8EDF2',
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
+    backgroundColor: '#E8EDF2',
+    paddingLeft: 10,
   },
   button: {
-    backgroundColor: '#1a73e8',
+    backgroundColor: '#1A78E5',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -121,5 +118,13 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#1a73e8',
     fontSize: 14,
+  },
+  buttonStyle: {
+    backgroundColor: '#E8EDF2',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
   },
 });

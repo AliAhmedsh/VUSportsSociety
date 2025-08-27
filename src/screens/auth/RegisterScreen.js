@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, Alert, ScrollView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Picker } from '@react-native-picker/picker';
 import { RootStackParamList } from '../../navigation/types';
-
+import TopBar from '../../components/TopBar/TopBar';
+import InputBar from '../../components/InputBar/InputBar';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [role, setRole] = useState<'participant' | 'coach'>('participant');
+  const [role, setRole] = useState('');
+
+  // const [role, setRole] =
+  //   (useState < 'participant') | ('coach' > 'participant');
+
   const [loading, setLoading] = useState(false);
-  
+
   const { register } = useAuth();
   const navigation = useNavigation();
 
@@ -39,15 +52,15 @@ export default function RegisterScreen() {
       await register(email, password, displayName, role);
       Alert.alert(
         'Registration Successful',
-        role === 'coach' 
+        role === 'coach'
           ? 'Your account is pending approval from an administrator.'
           : 'Your account has been created successfully!',
         [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Login')
-          }
-        ]
+            onPress: () => navigation.navigate('Login'),
+          },
+        ],
       );
     } catch (error) {
       Alert.alert('Registration Failed', error.message);
@@ -59,49 +72,68 @@ export default function RegisterScreen() {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Create Account</Text>
+        <TopBar text={'VU Sports Society'} />
+        <View>
+          <Text
+            style={{
+              fontSize: 28,
+              fontWeight: '700',
+              textAlign: 'center',
+              marginTop: 10,
+            }}
+          >
+            Create Account
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: '400',
+              textAlign: 'center',
+              marginTop: 10,
+              marginBottom: 20,
+            }}
+          >
+            Join our community of sports enthusiasts at Virtual University.
+          </Text>
+        </View>
         <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Full Name"
+          <InputBar
             value={displayName}
-            onChangeText={setDisplayName}
+            onChange={setDisplayName}
+            placeholder="Full Name"
             autoCapitalize="words"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
+          <InputBar
             value={email}
-            onChangeText={setEmail}
+            onChange={setEmail}
+            placeholder="Email"
             autoCapitalize="none"
             keyboardType="email-address"
           />
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={role}
-              onValueChange={(itemValue) => setRole(itemValue)}
+              onValueChange={itemValue => setRole(itemValue)}
               style={styles.picker}
             >
               <Picker.Item label="Participant" value="participant" />
               <Picker.Item label="Coach" value="coach" />
             </Picker>
           </View>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
+          <InputBar
             value={password}
-            onChangeText={setPassword}
+            onChange={setPassword}
+            placeholder="Password"
             secureTextEntry
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
+          <InputBar
             value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            onChange={setConfirmPassword}
+            placeholder="Confirm Password"
             secureTextEntry
           />
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleRegister}
             disabled={loading}
@@ -110,12 +142,14 @@ export default function RegisterScreen() {
               {loading ? 'Creating Account...' : 'Register'}
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.linkButton}
             onPress={() => navigation.navigate('Login')}
           >
-            <Text style={styles.linkText}>Already have an account? Login here</Text>
+            <Text style={styles.linkText}>
+              Already have an account? Login here
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -130,8 +164,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    padding: 20,
   },
   title: {
     fontSize: 24,
@@ -141,14 +173,8 @@ const styles = StyleSheet.create({
     color: '#1a73e8',
   },
   formContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 20,
   },
   input: {
     height: 50,
@@ -190,7 +216,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    color: '#1a73e8',
+    color: '#4F7096',
     fontSize: 14,
   },
 });
