@@ -15,19 +15,25 @@ function Dashboard() {
       {/* Top Stats Grid */}
       <View style={styles.statsGrid}>
         <View style={styles.statCard}>
-          <Text style={styles.statLabel}>Total Participants</Text>
+          <Text style={styles.statLabel}>Total</Text>
+          <Text style={styles.statLabel}>Participants</Text>
           <Text style={styles.statValue}>1,250</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statLabel}>Active Teams</Text>
+          <Text style={styles.statLabel}>Active</Text>
+          <Text style={styles.statLabel}>Teams</Text>
+
           <Text style={styles.statValue}>75</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statLabel}>Upcoming Events</Text>
+          <Text style={styles.statLabel}>Upcoming</Text>
+          <Text style={styles.statLabel}>Events</Text>
           <Text style={styles.statValue}>15</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statLabel}>Pending Approvals</Text>
+          <Text style={styles.statLabel}>Pending</Text>
+          <Text style={styles.statLabel}>Approvals</Text>
+
           <Text style={styles.statValue}>5</Text>
         </View>
       </View>
@@ -112,21 +118,23 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '48%',
     marginBottom: 15,
+    height: 134,
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#555',
     marginBottom: 5,
+    fontWeight: '500',
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#0D141C',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '700',
-    marginVertical: 10,
+    marginVertical: 20,
     color: '#0D141C',
   },
   card: {
@@ -171,7 +179,7 @@ const styles = StyleSheet.create({
   quickButtonText: {
     fontSize: 14,
     color: '#0D141C',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   quickButtonTextPrimary: {
     fontSize: 14,

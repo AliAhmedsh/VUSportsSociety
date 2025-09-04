@@ -262,6 +262,7 @@ const TeamDetailsScreen = () => {
     );
   }
 
+
   return (
     <ScrollView style={styles.container}>
       {/* Team Header */}

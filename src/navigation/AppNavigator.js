@@ -12,6 +12,11 @@ import EventsScreen from '../screens/participant/EventsScreen/EventsScreen';
 import TeamsScreen from '../screens/participant/TeamScreen/TeamsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { useAuth } from '../context/AuthContext';
+import Dashboard from '../screens/participant/DashboardScreen/Dashboard';
+import EventsScreenv2 from '../screens/participant/EventsScreen/EventScreenV2';
+import TeamsScreenv2 from '../screens/participant/TeamScreen/TeamsScreenv2';
+import SettingsScreen from '../screens/setting/Setting';
+import LeaderboardScreen from '../screens/leaderboard/Leaderboard';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -65,9 +70,9 @@ function MainTabs() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={EventsScreenv2} />
       <Tab.Screen name="Events" component={EventsScreen} />
-      <Tab.Screen name="Teams" component={TeamsScreen} />
+      <Tab.Screen name="Teams" component={LeaderboardScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
