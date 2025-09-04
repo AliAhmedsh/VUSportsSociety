@@ -5,12 +5,13 @@ import {
   StyleSheet,
   Text,
   Touchable,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import TopBar from '../../../components/TopBar/TopBar';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const TeamsScreenv2 = () => {
+const TeamsScreenv3 = () => {
   const events = [
     {
       id: '1',
@@ -43,7 +44,7 @@ const TeamsScreenv2 = () => {
   return (
     <View style={styles.container}>
       <TopBar text={'My Teams'} />
-      <Text style={{ fontSize: 18, fontWeight: '700' }}>Joined Teams</Text>
+      <Text style={{ fontSize: 18, fontWeight: '700' }}>Teams</Text>
       <View style={{}}>
         <FlatList
           data={events}
@@ -53,43 +54,26 @@ const TeamsScreenv2 = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <Text style={styles.sectionTitle}>Create or Join</Text>
-      <View style={{ gap: 10, marginTop: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <View
-            style={{
-              width: 40,
-              aspectRatio: 1,
-              backgroundColor: '#EBEDF2',
-              borderRadius: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="add" size={26} color="#000" />
-          </View>
-          <Text style={{ fontSize: 16, color: '#0F1417', fontWeight: '400' }}>
-            Create a New Team
+      <TouchableOpacity
+        style={{
+          height: 56,
+          backgroundColor: '#B2C9E5',
+          width: '40%',
+          borderRadius: 12,
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Icon name="add" size={24} color="#0F1417" />
+          <Text style={{ fontSize: 16, color: '#0F1417', fontWeight: 'bold' }}>
+            Create Team
           </Text>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <View
-            style={{
-              width: 40,
-              aspectRatio: 1,
-              backgroundColor: '#EBEDF2',
-              borderRadius: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="person-outline" size={26} color="#000" />
-          </View>
-          <Text style={{ fontSize: 16, color: '#0F1417', fontWeight: '400' }}>
-            Join a Team
-          </Text>
-        </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -156,4 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TeamsScreenv2;
+export default TeamsScreenv3;
