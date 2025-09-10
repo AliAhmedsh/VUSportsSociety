@@ -69,7 +69,7 @@ function MainTabs() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={EventsScreenv2} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Events" component={EventsScreen} />
       <Tab.Screen name="Teams" component={TeamsScreenv3} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

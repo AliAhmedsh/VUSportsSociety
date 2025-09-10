@@ -63,7 +63,6 @@ fastlane/test_output
 .metro-health-check*
 
 # Babel
-.env
 
 # Ruby / CocoaPods
 /ios/Pods/
@@ -214,7 +213,6 @@ fastlane/test_output
 .metro-health-check*
 
 # Babel
-.env
 
 # Ruby / CocoaPods
 /ios/Pods/
@@ -224,3 +222,6 @@ fastlane/test_output
 *.js.meta
 *.js.map
 *.h.map
+config.bat
+temp_auto_push.bat
+temp_interactive_push.bat

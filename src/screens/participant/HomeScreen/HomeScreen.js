@@ -5,118 +5,169 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/types';
+import { LineChart } from 'react-native-chart-kit';
 import { useAuth } from '../../../context/AuthContext';
+
+const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
 
-  const upcomingEvents = [
-    {
-      id: '1',
-      title: 'Football Tournament',
-      date: '2023-08-15',
-      type: 'tournament',
+  // Sample data for the chart
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        data: [45, 55, 42, 58, 35, 65, 48],
+        strokeWidth: 3,
+        color: (opacity = 1) => `rgba(26, 115, 232, ${opacity})`,
+      },
+    ],
+  };
+
+  const chartConfig = {
+    backgroundColor: '#ffffff',
+    backgroundGradientFrom: '#ffffff',
+    backgroundGradientTo: '#ffffff',
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(26, 115, 232, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(136, 136, 136, ${opacity})`,
+    style: {
+      borderRadius: 16,
     },
-    {
-      id: '2',
-      title: 'Basketball Practice',
-      date: '2023-08-16',
-      type: 'practice',
+    propsForDots: {
+      r: '4',
+      strokeWidth: '2',
+      stroke: '#1a73e8',
     },
-    { id: '3', title: 'Cricket Match', date: '2023-08-18', type: 'match' },
+  };
+
+  const statsCards = [
+    { title: 'Total\nParticipants', value: '1,250', color: '#f0f0f0' },
+    { title: 'Active Teams', value: '75', color: '#f0f0f0' },
+    { title: 'Upcoming\nEvents', value: '15', color: '#f0f0f0' },
+    { title: 'Pending\nApprovals', value: '5', color: '#f0f0f0' },
+  ];
+
+  const eventData = [
+    { name: 'Event 1', participation: 85 },
+    { name: 'Event 2', participation: 65 },
+    { name: 'Event 3', participation: 45 },
   ];
 
   const quickActions = [
-    { id: '1', title: 'Join Event', icon: 'calendar', screen: 'Events' },
-    { id: '2', title: 'My Teams', icon: 'people', screen: 'Teams' },
-    { id: '3', title: 'My Profile', icon: 'person', screen: 'Profile' },
+    { title: 'Manage Users', color: '#1a73e8', textColor: '#fff' },
+    { title: 'Manage Events', color: '#f0f0f0', textColor: '#333' },
+    { title: 'Manage Teams', color: '#1a73e8', textColor: '#fff' },
+    { title: 'View Reports', color: '#f0f0f0', textColor: '#333' },
   ];
 
   return (
     <ScrollView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome back,</Text>
-        <Text style={styles.userName}>{user?.displayName || 'User'}</Text>
+        <View style={styles.hamburger}>
+          <View style={styles.hamburgerLine} />
+          <View style={styles.hamburgerLine} />
+          <View style={styles.hamburgerLine} />
+        </View>
+        <Text style={styles.headerTitle}>Dashboard</Text>
+      </View>
+
+      {/* Stats Grid */}
+      <View style={styles.statsGrid}>
+        {statsCards.map((card, index) => (
+          <View key={index} style={[styles.statCard, { backgroundColor: card.color }]}>
+            <Text style={styles.statTitle}>{card.title}</Text>
+            <Text style={styles.statValue}>{card.value}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Participant Growth Chart */}
+      <View style={styles.chartSection}>
+        <Text style={styles.sectionTitle}>Participant Growth</Text>
+        <View style={styles.chartContainer}>
+          <View style={styles.chartHeader}>
+            <Text style={styles.chartTitle}>Participant Growth</Text>
+            <Text style={styles.growthPercentage}>+15%</Text>
+            <Text style={styles.growthSubtext}>Last 30 Days +15%</Text>
+          </View>
+          <LineChart
+            data={chartData}
+            width={width - 64}
+            height={200}
+            chartConfig={chartConfig}
+            bezier
+            style={styles.chart}
+            withDots={true}
+            withShadow={false}
+            withVerticalLabels={true}
+            withHorizontalLabels={true}
+          />
+        </View>
+      </View>
+
+      {/* Event Overview */}
+      <View style={styles.eventSection}>
+        <Text style={styles.sectionTitle}>Event Overview</Text>
+        <View style={styles.eventContainer}>
+          <View style={styles.eventHeader}>
+            <Text style={styles.eventTitle}>Event Participation</Text>
+            <Text style={styles.eventPercentage}>+10%</Text>
+            <Text style={styles.eventSubtext}>Last 30 Days +10%</Text>
+          </View>
+          <View style={styles.eventBars}>
+            {eventData.map((event, index) => (
+              <View key={index} style={styles.eventBarContainer}>
+                <View style={styles.eventBar}>
+                  <View 
+                    style={[
+                      styles.eventBarFill, 
+                      { height: `${event.participation}%` }
+                    ]} 
+                  />
+                </View>
+                <Text style={styles.eventBarLabel}>{event.name}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
 
       {/* Quick Actions */}
-      <View style={styles.section}>
+      <View style={styles.quickActionsSection}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
-        <View style={styles.quickActions}>
-          {quickActions.map(action => (
+        <View style={styles.actionsGrid}>
+          {quickActions.map((action, index) => (
             <TouchableOpacity
-              key={action.id}
-              style={styles.actionCard}
-              onPress={() =>
-                navigation.navigate('Main', { screen: action.screen })
-              }
+              key={index}
+              style={[styles.actionButton, { backgroundColor: action.color }]}
+              onPress={() => {
+                // Handle navigation based on action
+                if (action.title === 'Manage Events') {
+                  navigation.navigate('Main', { screen: 'Events' });
+                } else if (action.title === 'Manage Teams') {
+                  navigation.navigate('Main', { screen: 'Teams' });
+                } else if (action.title === 'View Reports') {
+                  navigation.navigate('Main', { screen: 'Profile' });
+                }
+              }}
             >
-              <View style={styles.actionIcon}>
-                <Text style={styles.actionIconText}>
-                  {action.icon === 'calendar'
-                    ? '📅'
-                    : action.icon === 'people'
-                    ? '👥'
-                    : '👤'}
-                </Text>
-              </View>
-              <Text style={styles.actionText}>{action.title}</Text>
+              <Text style={[styles.actionButtonText, { color: action.textColor }]}>
+                {action.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
-      {/* Upcoming Events */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Upcoming Events</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Main', { screen: 'Events' })}
-          >
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
-        </View>
-
-        {upcomingEvents.slice(0, 2).map(event => (
-          <View key={event.id} style={styles.eventCard}>
-            <View style={styles.eventDate}>
-              <Text style={styles.eventDateDay}>
-                {new Date(event.date).getDate()}
-              </Text>
-              <Text style={styles.eventDateMonth}>
-                {new Date(event.date).toLocaleString('default', {
-                  month: 'short',
-                })}
-              </Text>
-            </View>
-            <View style={styles.eventDetails}>
-              <Text style={styles.eventTitle}>{event.title}</Text>
-              <Text style={styles.eventType}>
-                {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
-              </Text>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* Announcements */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Announcements</Text>
-        <View style={styles.announcementCard}>
-          <Text style={styles.announcementTitle}>Registration Open</Text>
-          <Text style={styles.announcementText}>
-            Registration for the annual sports gala is now open. Register your
-            team before August 20th!
-          </Text>
-          <Text style={styles.announcementDate}>2 days ago</Text>
-        </View>
-      </View>
+      {/* Bottom Navigation Spacer */}
+      <View style={styles.bottomSpacer} />
     </ScrollView>
   );
 };
@@ -124,142 +175,170 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-    padding: 16,
+    backgroundColor: '#ffffff',
   },
   header: {
-    marginBottom: 24,
-  },
-  welcomeText: {
-    fontSize: 24,
-    color: '#333',
-  },
-  userName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a73e8',
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    paddingTop: 50,
   },
-  sectionTitle: {
+  hamburger: {
+    marginRight: 16,
+  },
+  hamburgerLine: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#333',
+    marginBottom: 4,
+  },
+  headerTitle: {
     fontSize: 20,
     fontWeight: '600',
     color: '#333',
   },
-  seeAllText: {
-    color: '#1a73e8',
-    fontSize: 14,
-  },
-  quickActions: {
+  statsGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  statCard: {
+    width: '47%',
+    marginRight: '3%',
+    marginBottom: 12,
+    borderRadius: 12,
+    padding: 20,
+  },
+  statTitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  statValue: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  chartSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
     marginBottom: 16,
   },
-  actionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+  chartContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
     padding: 16,
-    alignItems: 'center',
-    width: '31%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
-  actionIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#e8f0fe',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
+  chartHeader: {
+    marginBottom: 16,
   },
-  actionIconText: {
-    fontSize: 24,
+  chartTitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 4,
   },
-  actionText: {
-    fontSize: 12,
-    textAlign: 'center',
-    color: '#555',
-  },
-  eventCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  eventDate: {
-    backgroundColor: '#e8f0fe',
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
-    marginRight: 16,
-    minWidth: 70,
-  },
-  eventDateDay: {
-    fontSize: 20,
+  growthPercentage: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a73e8',
+    color: '#333',
+    marginBottom: 4,
   },
-  eventDateMonth: {
+  growthSubtext: {
     fontSize: 12,
     color: '#1a73e8',
-    textTransform: 'uppercase',
   },
-  eventDetails: {
-    flex: 1,
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  eventSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  eventContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    padding: 16,
+  },
+  eventHeader: {
+    marginBottom: 20,
   },
   eventTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-    color: '#333',
-  },
-  eventType: {
-    fontSize: 14,
     color: '#666',
+    marginBottom: 4,
   },
-  announcementCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  announcementTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
+  eventPercentage: {
+    fontSize: 28,
+    fontWeight: 'bold',
     color: '#333',
+    marginBottom: 4,
   },
-  announcementText: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 8,
-    lineHeight: 20,
-  },
-  announcementDate: {
+  eventSubtext: {
     fontSize: 12,
-    color: '#888',
+    color: '#1a73e8',
+  },
+  eventBars: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    height: 120,
+  },
+  eventBarContainer: {
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  eventBar: {
+    width: 40,
+    height: 80,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  eventBarFill: {
+    backgroundColor: '#8e8e8e',
+    width: '100%',
+  },
+  eventBarLabel: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+  quickActionsSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    width: '47%',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  bottomSpacer: {
+    height: 100,
   },
 });
 
